@@ -33,6 +33,7 @@ def create_argparser():
 
 def main():
     args = create_argparser().parse_args()
+    print(args)
     set_seed(args.seed) 
     dist_util.setup_dist()
     logger.configure()
