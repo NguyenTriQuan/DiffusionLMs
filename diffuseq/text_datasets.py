@@ -7,6 +7,8 @@ import torch
 import json
 import psutil
 import datasets
+import gdown
+
 # from datasets import Dataset as Dataset2
 
 def load_data_text(
@@ -160,6 +162,11 @@ def get_corpus(data_args, seq_len, split='train', loaded_vocab=None):
 
     print('#'*30, '\nLoading dataset {} from {}...'.format(data_args.dataset, data_args.data_dir))
 
+    if data_args.dataset == 'qqp':
+        url = 'https://drive.google.com/drive/folders/1BHGCeHRZU7MQF3rsqXBIOCU2WIC3W6fb'
+        output = 'datasets/'
+        data_args.data_dir = 'datasets/QQP'
+    gdown.download_folder(url, output=output, quiet=True, use_cookies=False)
     sentence_lst = {'src':[], 'trg': []}
     
     if split == 'train':
