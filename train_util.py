@@ -167,7 +167,8 @@ class TrainLoop:
 
     def _setup_fp16(self):
         self.master_params = make_master_params(self.model_params)
-        self.model.convert_to_fp16()
+        self.model.half()
+        # self.model.convert_to_fp16()
 
     def run_loop(self):
         while (
