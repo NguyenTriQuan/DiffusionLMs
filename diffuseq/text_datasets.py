@@ -7,7 +7,7 @@ import torch
 import json
 import psutil
 import datasets
-from datasets import Dataset as Dataset2
+# from datasets import Dataset as Dataset2
 
 def load_data_text(
     batch_size, 
