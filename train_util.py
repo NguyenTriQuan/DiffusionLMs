@@ -9,6 +9,7 @@ import torch.distributed as dist
 from torch.nn.parallel.distributed import DistributedDataParallel as DDP
 from torch.optim import AdamW
 import io
+import time
 
 from diffuseq.utils import dist_util, logger
 from diffuseq.utils.fp16_util import (
@@ -171,13 +172,20 @@ class TrainLoop:
         # self.model.convert_to_fp16()
 
     def run_loop(self):
+        th.backends.cudnn.benchmark = True
+        scaler = th.cuda.amp.GradScaler(enabled=True)
+        total_time = 0
         while (
             not self.learning_steps
             or self.step + self.resume_step < self.learning_steps
         ):
             batch, cond = next(self.data)
-            self.run_step(batch, cond)
+            t1 = time.time()
+            self.run_step(batch, cond, scaler)
+            run_time = time.time() - t1
+            total_time += run_time
             if self.step % self.log_interval == 0:
+                print(f'Run time: {run_time} sec/step, {total_time}/{run_time*self.learning_steps} sec')
                 logger.dumpkvs()
             if self.eval_data is not None and self.step % self.eval_interval == 0:
                 batch_eval, cond_eval = next(self.eval_data)
@@ -194,12 +202,12 @@ class TrainLoop:
         if (self.step - 1) % self.save_interval != 0:
             self.save()
 
-    def run_step(self, batch, cond):
-        self.forward_backward(batch, cond)
+    def run_step(self, batch, cond, scaler):
+        self.forward_backward(batch, cond, scaler)
         if self.use_fp16:
             self.optimize_fp16()
         else:
-            self.optimize_normal()
+            self.optimize_normal(scaler)
         self.log_step()
 
     def forward_only(self, batch, cond):
@@ -233,7 +241,7 @@ class TrainLoop:
                 )
 
 
-    def forward_backward(self, batch, cond):
+    def forward_backward(self, batch, cond, scaler):
         zero_grad(self.model_params)
         for i in range(0, batch.shape[0], self.microbatch):
             micro = batch[i : i + self.microbatch].to(dist_util.dev())
@@ -271,7 +279,8 @@ class TrainLoop:
                 loss_scale = 2 ** self.lg_loss_scale
                 (loss * loss_scale).backward()
             else:
-                loss.backward()
+                # loss.backward()
+                scaler.scale(loss).backward()
 
     def optimize_fp16(self):
         if any(not th.isfinite(p.grad).all() for p in self.model_params):
@@ -307,12 +316,14 @@ class TrainLoop:
                 max_grad_norm,
             )
 
-    def optimize_normal(self):
+    def optimize_normal(self, scaler):
         if self.gradient_clipping > 0:
             self.grad_clip()
         self._log_grad_norm()
         self._anneal_lr()
-        self.opt.step()
+        # self.opt.step()
+        scaler.step(self.opt)
+        scaler.update()
         for rate, params in zip(self.ema_rate, self.ema_params):
             update_ema(params, self.master_params, rate=rate)
 

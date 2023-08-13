@@ -182,10 +182,10 @@ def get_corpus(data_args, seq_len, split='train', loaded_vocab=None):
         assert False, "invalid split for dataset"
 
     with open(path, 'r') as f_reader:
-        count = 0 
+        # count = 0 
         for row in f_reader:
-            if count >= 50000: break
-            count += 1
+            # if count >= 50000: break
+            # count += 1
             content = json.loads(row)
             sentence_lst['src'].append(content['src'].strip())
             sentence_lst['trg'].append(content['trg'].strip())
