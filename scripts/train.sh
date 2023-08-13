@@ -7,7 +7,7 @@ python -m torch.distributed.launch --nproc_per_node=4 --master_port=12233 --use_
 --noise_schedule sqrt \
 --hidden_dim 128 \
 --bsz 2048 \
---microbatch 96 \
+--microbatch 80 \
 --dataset qqp \
 --data_dir {path-to-datasets} \
 --vocab bert \
