@@ -1,13 +1,13 @@
 python -m torch.distributed.launch --nproc_per_node=4 --master_port=12233 --use_env run_train.py \
 --diff_steps 1000 \
 --lr 0.0001 \
---learning_steps 20000 \
+--learning_steps 10000 \
 --save_interval 40 \
 --seed 102 \
 --noise_schedule sqrt \
 --hidden_dim 128 \
 --bsz 2048 \
---microbatch 80 \
+--microbatch 70 \
 --dataset qqp \
 --data_dir {path-to-datasets} \
 --vocab bert \
