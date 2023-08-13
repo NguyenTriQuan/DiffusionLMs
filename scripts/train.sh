@@ -11,6 +11,6 @@ python -m torch.distributed.launch --nproc_per_node=4 --master_port=12233 --use_
 --dataset qqp \
 --data_dir {path-to-datasets} \
 --vocab bert \
---seq_len 128 \
+--seq_len 64 \
 --schedule_sampler lossaware \
 --notes test-qqp
