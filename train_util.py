@@ -182,10 +182,10 @@ class TrainLoop:
             batch, cond = next(self.data)
             t1 = time.time()
             self.run_step(batch, cond, scaler)
-            run_time = int(time.time() - t1)
+            run_time = time.time() - t1
             total_time += run_time
             if self.step % self.log_interval == 0:
-                print(f'Run time: {run_time} sec/step, {total_time/3600}/{run_time*self.learning_steps/3600} hours')
+                print(f'Run time: {run_time} sec/step, {round(total_time/3600, 3)}/{round(run_time*self.learning_steps/3600, 3)} hours')
                 logger.dumpkvs()
             if self.eval_data is not None and self.step % self.eval_interval == 0:
                 batch_eval, cond_eval = next(self.eval_data)
