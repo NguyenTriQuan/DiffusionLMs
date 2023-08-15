@@ -168,6 +168,7 @@ def get_corpus(data_args, seq_len, split='train', loaded_vocab=None):
         data_args.data_dir = 'datasets/QQP'
         gdown.download_folder(url, output=output, quiet=True, use_cookies=False)
     if data_args.dataset == 'multi30k':
+        import urllib.request
         from urllib.request import urlopen
         from io import BytesIO
         from zipfile import ZipFile
@@ -180,9 +181,9 @@ def get_corpus(data_args, seq_len, split='train', loaded_vocab=None):
 
         os.makedirs('datasets/Multi30K')
         data_args.data_dir = 'datasets/Multi30K'
-        download_and_unzip("https://raw.githubusercontent.com/neychev/small_DL_repo/master/datasets/Multi30k/training.tar.gz", "datasets/Multi30K/train.jsonl")
-        download_and_unzip("https://raw.githubusercontent.com/neychev/small_DL_repo/master/datasets/Multi30k/validation.tar.gz", "datasets/Multi30K/valid.jsonl")
-        download_and_unzip("https://raw.githubusercontent.com/neychev/small_DL_repo/master/datasets/Multi30k/validation.tar.gz", "datasets/Multi30K/test.jsonl")
+        urllib.request.urlretrieve("https://raw.githubusercontent.com/neychev/small_DL_repo/master/datasets/Multi30k/training.tar.gz", "datasets/Multi30K/train.jsonl")
+        urllib.request.urlretrieve("https://raw.githubusercontent.com/neychev/small_DL_repo/master/datasets/Multi30k/validation.tar.gz", "datasets/Multi30K/valid.jsonl")
+        urllib.request.urlretrieve("https://raw.githubusercontent.com/neychev/small_DL_repo/master/datasets/Multi30k/validation.tar.gz", "datasets/Multi30K/test.jsonl")
         
     sentence_lst = {'src':[], 'trg': []}
     
