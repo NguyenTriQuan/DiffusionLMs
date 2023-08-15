@@ -108,7 +108,7 @@ def helper_tokenize(sentence_lst, vocab_dict, seq_len):
     vocab = vocab_dict.tokenizer.get_vocab()
     print("Vocabulary size:", len(vocab))
     # Alternatively, print a subset of vocabulary tokens
-    print("Subset of vocabulary tokens:", list(vocab.keys())[:10])
+    print("Subset of vocabulary tokens:", list(vocab.keys()))
 
     def merge_and_mask(group_lst):
         lst = []
