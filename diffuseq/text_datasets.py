@@ -104,7 +104,7 @@ def helper_tokenize(sentence_lst, vocab_dict, seq_len):
     print('Max source sentence length',  max(len(s) for s in tokenized_datasets['input_id_x']))
     print('Max target sentence length',  max(len(s) for s in tokenized_datasets['input_id_y']))
     print(f"RAM used: {psutil.Process().memory_info().rss / (1024 * 1024):.2f} MB")
-    print(list(vocab_dict))
+    print(vocab_dict.tokenizer.pretrained_vocab_files_map)
 
     def merge_and_mask(group_lst):
         lst = []
