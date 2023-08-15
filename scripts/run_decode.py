@@ -35,9 +35,9 @@ if __name__ == '__main__':
 
         for checkpoint_one in checkpoints:
             print(checkpoint_one)
-            if 'ema_0.9999_010000.pt' not in checkpoint_one:
-                os.remove(checkpoint_one)
-                continue
+            # if 'ema_0.9999_010000.pt' not in checkpoint_one:
+            #     os.remove(checkpoint_one)
+            #     continue
             COMMAND = f'python -m torch.distributed.launch --nproc_per_node=1 --master_port={12233 + int(args.seed)} --use_env sample_seq2seq.py ' \
             f'--model_path {checkpoint_one} --step {args.step} ' \
             f'--batch_size {args.bsz} --seed2 {args.seed} --split {args.split} ' \

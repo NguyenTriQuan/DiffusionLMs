@@ -153,15 +153,15 @@ def main():
 
         model_kwargs = {}
 
-        # if args.step == args.diffusion_steps:
-        #     args.use_ddim = False
-        #     step_gap = 1
-        # else:
-        #     args.use_ddim = True
-        #     step_gap = args.diffusion_steps//args.step
+        if args.step == args.diffusion_steps:
+            args.use_ddim = False
+            step_gap = 1
+        else:
+            args.use_ddim = True
+            step_gap = args.diffusion_steps//args.step
 
-        args.use_ddim = False
-        step_gap = 1
+        # args.use_ddim = False
+        # step_gap = 1
         
         sample_fn = (
             diffusion.p_sample_loop if not args.use_ddim else diffusion.ddim_sample_loop
