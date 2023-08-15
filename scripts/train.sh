@@ -13,4 +13,4 @@ python -m torch.distributed.launch --nproc_per_node=2 --master_port=12233 --use_
 --vocab bert \
 --seq_len 64 \
 --schedule_sampler lossaware \
---notes test-qqp
+--notes demo
