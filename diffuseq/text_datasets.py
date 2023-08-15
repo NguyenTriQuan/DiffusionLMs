@@ -166,7 +166,24 @@ def get_corpus(data_args, seq_len, split='train', loaded_vocab=None):
         url = 'https://drive.google.com/drive/folders/1BHGCeHRZU7MQF3rsqXBIOCU2WIC3W6fb'
         output = 'datasets/'
         data_args.data_dir = 'datasets/QQP'
-    gdown.download_folder(url, output=output, quiet=True, use_cookies=False)
+        gdown.download_folder(url, output=output, quiet=True, use_cookies=False)
+    if data_args.dataset == 'multi30k':
+        from urllib.request import urlopen
+        from io import BytesIO
+        from zipfile import ZipFile
+        import os
+
+        def download_and_unzip(url, extract_to='.'):
+            http_response = urlopen(url)
+            zipfile = ZipFile(BytesIO(http_response.read()))
+            zipfile.extractall(path=extract_to)
+
+        os.makedirs('datasets/Multi30K')
+        data_args.data_dir = 'datasets/Multi30K'
+        download_and_unzip("https://raw.githubusercontent.com/neychev/small_DL_repo/master/datasets/Multi30k/training.tar.gz", "datasets/Multi30K/train.jsonl")
+        download_and_unzip("https://raw.githubusercontent.com/neychev/small_DL_repo/master/datasets/Multi30k/validation.tar.gz", "datasets/Multi30K/valid.jsonl")
+        download_and_unzip("https://raw.githubusercontent.com/neychev/small_DL_repo/master/datasets/Multi30k/validation.tar.gz", "datasets/Multi30K/test.jsonl")
+        
     sentence_lst = {'src':[], 'trg': []}
     
     if split == 'train':
