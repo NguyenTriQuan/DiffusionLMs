@@ -11,6 +11,6 @@ python -m torch.distributed.launch --nproc_per_node=1 --master_port=12233 --use_
 --dataset multi30k \
 --data_dir {path-to-datasets} \
 --vocab bert \
---seq_len 64 \
+--seq_len 100 \
 --schedule_sampler lossaware \
 --notes demo
