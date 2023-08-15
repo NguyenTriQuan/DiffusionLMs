@@ -17,6 +17,7 @@ class myTokenizer():
     ################################################
     def __init__(self, args):
         if args.vocab == 'bert':
+            print(args.config_name)
             tokenizer = AutoTokenizer.from_pretrained(args.config_name)
             self.tokenizer = tokenizer
             self.sep_token_id = tokenizer.sep_token_id
