@@ -179,7 +179,7 @@ def get_corpus(data_args, seq_len, split='train', loaded_vocab=None):
             zipfile = ZipFile(BytesIO(http_response.read()))
             zipfile.extractall(path=extract_to)
 
-        os.makedirs('datasets/Multi30K')
+        os.makedirs('datasets/Multi30K', exist_ok=True)
         data_args.data_dir = 'datasets/Multi30K'
         urllib.request.urlretrieve("https://raw.githubusercontent.com/neychev/small_DL_repo/master/datasets/Multi30k/training.tar.gz", "datasets/Multi30K/train.jsonl")
         urllib.request.urlretrieve("https://raw.githubusercontent.com/neychev/small_DL_repo/master/datasets/Multi30k/validation.tar.gz", "datasets/Multi30K/valid.jsonl")
