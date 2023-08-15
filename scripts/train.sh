@@ -1,8 +1,8 @@
-python -m torch.distributed.launch --nproc_per_node=1 --master_port=12233 --use_env run_train.py \
+python -m torch.distributed.launch --nproc_per_node=2 --master_port=12233 --use_env run_train.py \
 --diff_steps 2000 \
 --lr 0.0001 \
---learning_steps 20000 \
---save_interval 10000 \
+--learning_steps 10000 \
+--save_interval 5000 \
 --seed 102 \
 --noise_schedule sqrt \
 --hidden_dim 128 \
