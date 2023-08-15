@@ -161,12 +161,35 @@ def helper_tokenize(sentence_lst, vocab_dict, seq_len):
 def get_corpus(data_args, seq_len, split='train', loaded_vocab=None):
 
     print('#'*30, '\nLoading dataset {} from {}...'.format(data_args.dataset, data_args.data_dir))
+    sentence_lst = {'src':[], 'trg': []}
 
     if data_args.dataset == 'qqp':
         url = 'https://drive.google.com/drive/folders/1BHGCeHRZU7MQF3rsqXBIOCU2WIC3W6fb'
         output = 'datasets/'
         data_args.data_dir = 'datasets/QQP'
         gdown.download_folder(url, output=output, quiet=True, use_cookies=False)
+    
+        if split == 'train':
+            print('### Loading form the TRAIN set...')
+            path = f'{data_args.data_dir}/train.jsonl'
+        elif split == 'valid':
+            print('### Loading form the VALID set...')
+            path = f'{data_args.data_dir}/valid.jsonl'
+        elif split == 'test':
+            print('### Loading form the TEST set...')
+            path = f'{data_args.data_dir}/test.jsonl'
+        else:
+            assert False, "invalid split for dataset"
+
+        with open(path, 'r') as f_reader:
+            # count = 0 
+            for row in f_reader:
+                # if count >= 50000: break
+                # count += 1
+                content = json.loads(row)
+                sentence_lst['src'].append(content['src'].strip())
+                sentence_lst['trg'].append(content['trg'].strip())
+
     if data_args.dataset == 'multi30k':
         import requests
         import tarfile
@@ -177,34 +200,33 @@ def get_corpus(data_args, seq_len, split='train', loaded_vocab=None):
             file = tarfile.open(fileobj=response.raw, mode="r|gz")
             file.extractall(path=extract_to)
 
-        os.makedirs('datasets/Multi30K', exist_ok=True)
         data_args.data_dir = 'datasets/Multi30K'
-        download_and_unzip("https://raw.githubusercontent.com/neychev/small_DL_repo/master/datasets/Multi30k/training.tar.gz", "datasets/Multi30K/train.jsonl")
-        download_and_unzip("https://raw.githubusercontent.com/neychev/small_DL_repo/master/datasets/Multi30k/validation.tar.gz", "datasets/Multi30K/valid.jsonl")
-        download_and_unzip("https://raw.githubusercontent.com/neychev/small_DL_repo/master/datasets/Multi30k/validation.tar.gz", "datasets/Multi30K/test.jsonl")
-        
-    sentence_lst = {'src':[], 'trg': []}
-    
-    if split == 'train':
-        print('### Loading form the TRAIN set...')
-        path = f'{data_args.data_dir}/train.jsonl'
-    elif split == 'valid':
-        print('### Loading form the VALID set...')
-        path = f'{data_args.data_dir}/valid.jsonl'
-    elif split == 'test':
-        print('### Loading form the TEST set...')
-        path = f'{data_args.data_dir}/test.jsonl'
-    else:
-        assert False, "invalid split for dataset"
+        os.makedirs('datasets/Multi30K', exist_ok=True)
+        download_and_unzip("https://raw.githubusercontent.com/neychev/small_DL_repo/master/datasets/Multi30k/training.tar.gz", "datasets/Multi30K/train")
+        download_and_unzip("https://raw.githubusercontent.com/neychev/small_DL_repo/master/datasets/Multi30k/validation.tar.gz", "datasets/Multi30K/valid")
+        download_and_unzip("https://raw.githubusercontent.com/neychev/small_DL_repo/master/datasets/Multi30k/validation.tar.gz", "datasets/Multi30K/test")
 
-    with open(path, 'r') as f_reader:
-        # count = 0 
-        for row in f_reader:
-            # if count >= 50000: break
-            # count += 1
-            content = json.loads(row)
-            sentence_lst['src'].append(content['src'].strip())
-            sentence_lst['trg'].append(content['trg'].strip())
+        if split == 'train':
+            print('### Loading form the TRAIN set...')
+            src_path = f'{data_args.data_dir}/train/train.de'
+            trg_path = f'{data_args.data_dir}/train/train.en'
+        elif split == 'valid':
+            print('### Loading form the VALID set...')
+            src_path = f'{data_args.data_dir}/valid/val.de'
+            trg_path = f'{data_args.data_dir}/valid/val.en'
+        elif split == 'test':
+            print('### Loading form the TEST set...')
+            src_path = f'{data_args.data_dir}/test/val.de'
+            trg_path = f'{data_args.data_dir}/test/val.en'
+
+        with open(src_path, 'r') as f_reader:
+            for row in f_reader.readlines():
+                sentence_lst['src'].append(row.strip())
+
+        with open(trg_path, 'r') as f_reader:
+            for row in f_reader.readlines():
+                sentence_lst['trg'].append(row.strip())
+
 
     print('Number of training samples: ', len(sentence_lst['src']))
     print('### Data samples...\n', sentence_lst['src'][:2], sentence_lst['trg'][:2])
